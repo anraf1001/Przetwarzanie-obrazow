@@ -11,12 +11,14 @@ cv2.namedWindow('image')
 cv2.namedWindow('erosion')
 cv2.namedWindow('dilation')
 cv2.namedWindow('opening')
+cv2.namedWindow('closing')
 
 _, img_th = cv2.threshold(img, 150, 255, cv2.THRESH_BINARY)
 kernel = np.ones((5, 5), np.uint8)
 erosion = cv2.erode(img_th, kernel, iterations = 1)
 dilation = cv2.dilate(img_th, kernel, iterations = 1)
-opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+opening = cv2.morphologyEx(img_th, cv2.MORPH_OPEN, kernel)
+closing = cv2.morphologyEx(img_th, cv2.MORPH_CLOSE, kernel)
 
 cv2.createTrackbar('window', 'image', 1, 10, empty_callback)
 
@@ -32,11 +34,13 @@ while True:
     erosion = cv2.erode(img_th, kernel, iterations = 1)
     dilation = cv2.dilate(img_th, kernel, iterations = 1)
     opening = cv2.morphologyEx(img_th, cv2.MORPH_OPEN, kernel)
+    closing = cv2.morphologyEx(img_th, cv2.MORPH_CLOSE, kernel)
 
     cv2.imshow('image', img_th)
     cv2.imshow('erosion', erosion)
     cv2.imshow('dilation', dilation)
     cv2.imshow('opening', opening)
+    cv2.imshow('closing', closing)
 
 # closes all windows (usually optional as the script ends anyway)
 cv2.destroyAllWindows()
