@@ -9,6 +9,14 @@ def empty_callback(value):
 img = cv2.imread('parrot.jpeg', cv2.IMREAD_GRAYSCALE)
 cv2.namedWindow('image')
 cv2.namedWindow('erosion')
+cv2.namedWindow('dilation')
+
+_, img_th = cv2.threshold(img, 150, 255, cv2.THRESH_BINARY)
+kernel = np.ones((5, 5), np.uint8)
+erosion = cv2.erode(img_th, kernel, iterations = 1)
+dilation = cv2.dilate(img_th, kernel, iterations = 1)
+
+cv2.createTrackbar('window', 'image', 1, 10, empty_callback)
 
 while True:
     # sleep for 10 ms waiting for user to press some key, return -1 on timeout
@@ -17,12 +25,14 @@ while True:
         # escape key pressed
         break
 
-    ret, img_th = cv2.threshold(img, 150, 255, cv2.THRESH_BINARY)
-    kernel = np.ones((5, 5), np.uint8)
+    window_size = 2 * cv2.getTrackbarPos('window', 'image') + 1
+    kernel = np.ones((window_size, window_size), np.uint8)
     erosion = cv2.erode(img_th, kernel, iterations = 1)
+    dilation = cv2.dilate(img_th, kernel, iterations = 1)
 
     cv2.imshow('image', img_th)
     cv2.imshow('erosion', erosion)
+    cv2.imshow('dilation', dilation)
 
 # closes all windows (usually optional as the script ends anyway)
 cv2.destroyAllWindows()
