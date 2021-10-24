@@ -1,7 +1,17 @@
 import cv2
+import numpy as np
+
+def blur(img):
+    for row in range(1, len(img) - 1):
+        for col in range(1, len(img[row]) - 1):
+            img[row, col] = np.mean(img[row-1:row+2, col-1:col+2])
+
+    return img
 
 img = cv2.imread('lenna.png', cv2.IMREAD_GRAYSCALE)
 img.reshape(img.shape[0] * img.shape[1])[::3] = 255
+
+img_blurred = blur(img)
 
 cv2.namedWindow('image')
 
@@ -12,7 +22,7 @@ while True:
         # escape key pressed
         break
 
-    cv2.imshow('image', img)
+    cv2.imshow('image', img_blurred)
 
 # closes all windows (usually optional as the script ends anyway)
 cv2.destroyAllWindows()
