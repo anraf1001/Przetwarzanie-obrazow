@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+from timeit import timeit
+
 
 def blur(img):
     img_new = img.copy()
@@ -9,11 +11,17 @@ def blur(img):
 
     return img_new
 
+
 def builtin_blur(img):
     return cv2.blur(img, (3, 3))
 
+
 img = cv2.imread('lenna.png', cv2.IMREAD_GRAYSCALE)
 img.reshape(img.shape[0] * img.shape[1])[::3] = 255
+
+t1 = timeit(lambda: blur(img), number=1)
+t2 = timeit(lambda: builtin_blur(img), number=1)
+print(t1 / t2)
 
 img_blurred = blur(img)
 img_builtin = builtin_blur(img)
