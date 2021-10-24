@@ -15,6 +15,7 @@ def blur(img):
 def builtin_blur(img):
     return cv2.blur(img, (3, 3))
 
+
 def filter2D_blur(img):
     kernel = np.ones((3, 3), np.float32) / 9
     return cv2.filter2D(img, -1, kernel)
