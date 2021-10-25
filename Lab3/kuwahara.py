@@ -10,13 +10,17 @@ def kuwahara(img, window_size=3):
     img_border[border_size: img_border.shape[0] - border_size,
                border_size: img_border.shape[1] - border_size] = img
 
+    # Left
     img_border[border_size: img_border.shape[0] - border_size,
                0: border_size] = img_border[border_size: img_border.shape[0] - border_size,
                                             border_size].reshape((img.shape[0], 1))
+    # TODO: Right
     img_border[border_size: img_border.shape[0] - border_size,
                img_border.shape[1] - border_size - 1: img_border.shape[1]] = img_border[border_size: img_border.shape[0] - border_size,
                                                                                         img_border.shape[1] - border_size].reshape((img.shape[0], 1))
+    # Up
     img_border[0: border_size] = img_border[border_size]
+    # Down
     img_border[img_border.shape[1] - border_size: img_border.shape[1]] = img_border[img_border.shape[1] - border_size - 1]
 
     img_new = img.copy()
