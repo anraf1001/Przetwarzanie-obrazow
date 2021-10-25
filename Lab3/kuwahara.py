@@ -13,7 +13,11 @@ def kuwahara(img, window_size=3):
     img_border[border_size: img_border.shape[0] - border_size,
                0: border_size] = img_border[border_size: img_border.shape[0] - border_size,
                                             border_size].reshape((img.shape[0], 1))
+    img_border[border_size: img_border.shape[0] - border_size,
+               img_border.shape[1] - border_size - 1: img_border.shape[1]] = img_border[border_size: img_border.shape[0] - border_size,
+                                                                                        img_border.shape[1] - border_size].reshape((img.shape[0], 1))
     img_border[0: border_size] = img_border[border_size]
+    img_border[img_border.shape[1] - border_size: img_border.shape[1]] = img_border[img_border.shape[1] - border_size - 1]
 
     img_new = img.copy()
 
@@ -33,7 +37,7 @@ def kuwahara(img, window_size=3):
 
             img_new[row, col] = mean[np.argmax(std)]
 
-    return img_border # TODO: Change to img_new
+    return img_border  # TODO: Change to img_new
 
 
 img = cv2.imread('lenna.png', cv2.IMREAD_GRAYSCALE)
