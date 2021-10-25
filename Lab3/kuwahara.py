@@ -4,10 +4,17 @@ import numpy as np
 
 def kuwahara(img, window_size=3):
     border_size = window_size - 1
+
     img_border = np.zeros((img.shape[0] + 2 * border_size,
                            img.shape[1] + 2 * border_size), dtype=np.uint8)
     img_border[border_size: img_border.shape[0] - border_size,
                border_size: img_border.shape[1] - border_size] = img
+
+    img_border[border_size: img_border.shape[0] - border_size,
+               0: border_size] = img_border[border_size: img_border.shape[0] - border_size,
+                                            border_size].reshape((img.shape[0], 1))
+    img_border[0: border_size] = img_border[border_size]
+
     img_new = img.copy()
 
     for row in range(len(img_new)):
@@ -26,7 +33,7 @@ def kuwahara(img, window_size=3):
 
             img_new[row, col] = mean[np.argmax(std)]
 
-    return img_new
+    return img_border # TODO: Change to img_new
 
 
 img = cv2.imread('lenna.png', cv2.IMREAD_GRAYSCALE)
