@@ -7,8 +7,8 @@ def kuwahara(img, window_size=3):
     img_border_shape = (img.shape[0] + 2 * border_size, img.shape[1] + 2 * border_size)
 
     img_border = np.zeros(img_border_shape, dtype=np.uint8)
-    img_border[border_size: img_border.shape[0] - border_size,
-               border_size: img_border.shape[1] - border_size] = img
+    img_border[border_size: -border_size,
+               border_size: -border_size] = img
 
     # Left
     img_border[border_size: -border_size,
