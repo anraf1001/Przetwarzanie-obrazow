@@ -21,7 +21,8 @@ def kuwahara(img, window_size=3):
     # Up
     img_border[0: border_size] = img_border[border_size]
     # Down
-    img_border[-1 - border_size: img_border.shape[0]] = img_border[-2 - border_size]
+    img_border[-1 - border_size: len(img_border)] = \
+        img_border[-2 - border_size]
 
     img_new = img.copy()
 
