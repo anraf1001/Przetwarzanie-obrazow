@@ -4,23 +4,24 @@ import numpy as np
 
 def kuwahara(img, window_size=3):
     border_size = window_size - 1
+    img_border_shape = (img.shape[0] + 2 * border_size, img.shape[1] + 2 * border_size)
 
-    img_border = np.zeros((img.shape[0] + 2 * border_size,
-                           img.shape[1] + 2 * border_size), dtype=np.uint8)
+    img_border = np.zeros(img_border_shape, dtype=np.uint8)
     img_border[border_size: img_border.shape[0] - border_size,
                border_size: img_border.shape[1] - border_size] = img
 
     # Left
-    img_border[border_size: img_border.shape[0] - border_size,
-               0: border_size] = img_border[border_size: img_border.shape[0] - border_size,
-                                            border_size].reshape((img.shape[0], 1))
-    # TODO: Right
-    img_border[border_size: img_border.shape[0] - border_size,
-               img_border.shape[1] - border_size - 1: img_border.shape[1]] = img_border[border_size: img_border.shape[0] - border_size,
-                                                                                        img_border.shape[1] - border_size].reshape((img.shape[0], 1))
-    # Up
+    img_border[border_size: -border_size,
+               0: border_size] = \
+        img_border[border_size: -border_size,
+                   border_size].reshape((len(img), 1))
+    # Right
+    img_border[border_size: -border_size, -border_size: img_border.shape[1]] = \
+        img_border[border_size: -border_size, -
+                   border_size - 1].reshape((len(img), 1))
+    # Top
     img_border[0: border_size] = img_border[border_size]
-    # Down
+    # Bottom
     img_border[-border_size: len(img_border)] = \
         img_border[-border_size - 1]
 
