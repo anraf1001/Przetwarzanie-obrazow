@@ -48,7 +48,7 @@ def kuwahara(img: np.ndarray, window_size=3):
             mean[3], std[3] = cv2.meanStdDev(img_border[row + border_size: row + 2 * border_size + 1,
                                              col + border_size: col + 2 * border_size + 1])
 
-            img_new[row, col] = mean[np.argmax(std)]
+            img_new[row, col] = mean[np.argmin(std)]
 
     return img_new
 
