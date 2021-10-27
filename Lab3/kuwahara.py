@@ -2,12 +2,12 @@ import cv2
 import numpy as np
 
 
-def kuwahara(img: np.ndarray, window_size=3):
-    border_size = window_size - 1
+def create_img_with_padding(img: np.ndarray, border_size):
     img_border_shape = (img.shape[0] + 2 * border_size,
                         img.shape[1] + 2 * border_size)
 
     img_border = np.zeros(img_border_shape, dtype=np.uint8)
+
     img_border[border_size: -border_size,
                border_size: -border_size] = img
 
@@ -26,6 +26,12 @@ def kuwahara(img: np.ndarray, window_size=3):
     img_border[-border_size: len(img_border)] = \
         img_border[-border_size - 1]
 
+    return img_border
+
+
+def kuwahara(img: np.ndarray, window_size=3):
+    border_size = window_size - 1
+    img_border = create_img_with_padding(img, border_size)
     img_new = img.copy()
 
     for row in range(len(img_new)):
