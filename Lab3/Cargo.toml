@@ -12,6 +12,10 @@ name = "kuwahara_rust"
 # crate-type = ["cdylib", "rlib"]
 crate-type = ["cdylib"]
 
+[dependencies]
+numpy = "0.14"
+ndarray = "0.15.3"
+
 [dependencies.pyo3]
 version = "0.14.5"
 features = ["extension-module"]
