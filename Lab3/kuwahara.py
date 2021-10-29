@@ -56,22 +56,24 @@ def kuwahara(img: np.ndarray, window_size: int = 3):
 
 # From lab
 def apply_kuwahara(image: np.ndarray, window_size: int):
+    border_size = window_size // 2
+    image_border = create_img_with_padding(image, border_size)
     image_new = np.zeros_like(image)
 
-    for y in range(image_new.shape[0] - window_size):
-        for x in range(image_new.shape[1] - window_size):
-            window = image[y: y + window_size, x: x + window_size]
+    for y in range(image_new.shape[0]):
+        for x in range(image_new.shape[1]):
+            window = image_border[y: y + window_size, x: x + window_size]
             regions = [
-                window[0: window_size // 2 + 1, 0: window_size // 2 + 1],
-                window[window_size // 2: window_size, 0: window_size // 2 + 1],
-                window[0: window_size // 2 + 1, window_size // 2: window_size],
-                window[window_size // 2: window_size,
-                       window_size // 2: window_size]
+                window[0: border_size + 1, 0: border_size + 1],
+                window[border_size: window_size, 0: border_size + 1],
+                window[0: border_size + 1, border_size: window_size],
+                window[border_size: window_size,
+                       border_size: window_size]
             ]
 
             mean_std = [cv2.meanStdDev(r) for r in regions]
-            image_new[y + window_size // 2,
-                      x + window_size // 2] = min(mean_std, key=lambda x: x[1])[0]
+            image_new[y,
+                      x] = min(mean_std, key=lambda x: x[1])[0]
 
     return image_new
 
