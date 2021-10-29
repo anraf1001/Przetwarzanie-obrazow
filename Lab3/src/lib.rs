@@ -45,7 +45,7 @@ fn kuwahara_rust(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
                     std_mean(regions[3]),
                 ];
 
-                regions_std_mean.sort_by(|lhs, rhs| ((lhs.0 * 100.0) as u32).cmp(&((rhs.0 * 100.0) as u32)));
+                regions_std_mean.sort_by(|lhs, rhs| lhs.0.partial_cmp(&rhs.0).unwrap());
 
                 image_new[[y + border_size, x + border_size]] = regions_std_mean[0].1 as u8;
             }
