@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from timeit import timeit
+import kuwahara_rust
 
 
 def create_img_with_padding(img: np.ndarray, border_size: int):
@@ -82,7 +83,10 @@ def benchmark():
     img = cv2.imread('lenna.png', cv2.IMREAD_GRAYSCALE)
     t1 = timeit(lambda: kuwahara(img), number=1)
     t2 = timeit(lambda: apply_kuwahara(img, 5), number=1)
+    t3 = timeit(lambda: kuwahara_rust.apply_kuwahara(img, 5), number=1)
+
     print(f'Lab kuwahara: {t2 / t1 * 100:.2f}%')
+    print(f'Rust kuwahara: {t3 / t1 * 100:.2f}%')
 
 
 def main():
@@ -90,10 +94,12 @@ def main():
 
     img_blurred = kuwahara(img)
     img_blurred_2 = apply_kuwahara(img, 5)
+    img_rust = kuwahara_rust.apply_kuwahara(img, 5)
 
     cv2.namedWindow('image ori')
     cv2.namedWindow('image kuwahara')
     cv2.namedWindow('image kuwahara 2')
+    cv2.namedWindow('image kuwahara rust')
 
     while True:
         # sleep for 10 ms waiting for user to press some key, return -1 on timeout
@@ -105,11 +111,12 @@ def main():
         cv2.imshow('image ori', img)
         cv2.imshow('image kuwahara', img_blurred)
         cv2.imshow('image kuwahara 2', img_blurred_2)
+        cv2.imshow('image kuwahara rust', img_rust)
 
     # closes all windows (usually optional as the script ends anyway)
     cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
-    # main()
-    benchmark()
+    main()
+    # benchmark()
