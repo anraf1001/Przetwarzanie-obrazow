@@ -2,26 +2,6 @@ use ndarray::{s, ArrayD, ArrayView, ArrayViewD, Dim};
 use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
-fn mean(region: ArrayView<u8, Dim<[usize; 2]>>) -> f64 {
-    let sum: f64 = region.iter().map(|x| *x as f64).sum();
-    let count = region.len();
-
-    sum / count as f64
-}
-
-fn std_mean(region: ArrayView<u8, Dim<[usize; 2]>>) -> (f64, f64) {
-    let region_mean = mean(region);
-    let count = region.len();
-
-    let variance = region.iter().map(|value| {
-        let diff = region_mean - (*value as f64);
-
-        diff * diff
-    }).sum::<f64>() / count as f64;
-
-    (variance.sqrt(), region_mean)
-}
-
 #[pymodule]
 fn kuwahara_rust(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     fn apply_kuwahara(image: ArrayViewD<'_, u8>, window_size: usize) -> ArrayD<u8> {
@@ -66,4 +46,24 @@ fn kuwahara_rust(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     }
 
     Ok(())
+}
+
+fn mean(region: ArrayView<u8, Dim<[usize; 2]>>) -> f64 {
+    let sum: f64 = region.iter().map(|x| *x as f64).sum();
+    let count = region.len();
+
+    sum / count as f64
+}
+
+fn std_mean(region: ArrayView<u8, Dim<[usize; 2]>>) -> (f64, f64) {
+    let region_mean = mean(region);
+    let count = region.len();
+
+    let variance = region.iter().map(|value| {
+        let diff = region_mean - (*value as f64);
+
+        diff * diff
+    }).sum::<f64>() / count as f64;
+
+    (variance.sqrt(), region_mean)
 }
