@@ -6,11 +6,12 @@ use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 fn kuwahara_rust(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     fn apply_kuwahara(image: ArrayViewD<'_, u8>, window_size: usize) -> ArrayD<u8> {
         let border_size = window_size / 2;
+        let image_border = create_image_with_padding(&image, border_size);
         let mut image_new = ArrayD::zeros(image.shape());
 
-        for y in 0..image_new.shape()[0] - window_size {
-            for x in 0..image_new.shape()[1] - window_size {
-                let window = image.slice(s![y..y + window_size, x..x + window_size]);
+        for y in 0..image_new.shape()[0] {
+            for x in 0..image_new.shape()[1] {
+                let window = image_border.slice(s![y..y + window_size, x..x + window_size]);
                 let regions = [
                     window.slice(s![0..border_size + 1, 0..border_size + 1]),
                     window.slice(s![border_size..window_size, 0..border_size + 1]),
@@ -27,7 +28,7 @@ fn kuwahara_rust(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
 
                 regions_std_mean.sort_by(|lhs, rhs| lhs.0.partial_cmp(&rhs.0).unwrap());
 
-                image_new[[y + border_size, x + border_size]] = regions_std_mean[0].1 as u8;
+                image_new[[y, x]] = regions_std_mean[0].1 as u8;
             }
         }
 
@@ -72,10 +73,22 @@ fn std_mean(region: ArrayView2<u8>) -> (f64, f64) {
     (variance.sqrt(), region_mean)
 }
 
-fn create_image_with_padding(image: ArrayView2<u8>, border_size: usize) -> Array2<u8> {
+fn create_image_with_padding(image: &ArrayViewD<u8>, border_size: usize) -> Array2<u8> {
     let mut image_border = Array2::<u8>::zeros([
         image.shape()[0] + 2 * border_size,
         image.shape()[1] + 2 * border_size,
     ]);
+
+    let mut ori_region = image_border.slice_mut(s![
+        border_size..image.shape()[0] - border_size,
+        border_size..image.shape()[1] - border_size
+    ]);
+
+    for y in 0..ori_region.shape()[0] {
+        for x in 0..ori_region.shape()[1] {
+            ori_region[[y, x]] = image[[y, x]];
+        }
+    }
+
     image_border
 }
