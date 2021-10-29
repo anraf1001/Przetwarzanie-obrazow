@@ -1,4 +1,4 @@
-use ndarray::{s, ArrayD, ArrayView2, ArrayViewD};
+use ndarray::{s, Array2, ArrayD, ArrayView2, ArrayViewD};
 use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
@@ -72,8 +72,10 @@ fn std_mean(region: ArrayView2<u8>) -> (f64, f64) {
     (variance.sqrt(), region_mean)
 }
 
-// fn create_image_with_padding(
-//     image: ArrayView2<u8>,
-//     border_size: usize,
-// ) -> ArrayD<u8> {
-// }
+fn create_image_with_padding(image: ArrayView2<u8>, border_size: usize) -> Array2<u8> {
+    let mut image_border = Array2::<u8>::zeros([
+        image.shape()[0] + 2 * border_size,
+        image.shape()[1] + 2 * border_size,
+    ]);
+    image_border
+}
