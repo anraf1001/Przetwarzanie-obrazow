@@ -1,4 +1,4 @@
-use ndarray::{s, ArrayD, ArrayView, ArrayViewD, Dim};
+use ndarray::{s, ArrayD, ArrayView2, ArrayViewD};
 use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
@@ -48,22 +48,32 @@ fn kuwahara_rust(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-fn mean(region: ArrayView<u8, Dim<[usize; 2]>>) -> f64 {
+fn mean(region: ArrayView2<u8>) -> f64 {
     let sum: f64 = region.iter().map(|x| *x as f64).sum();
     let count = region.len();
 
     sum / count as f64
 }
 
-fn std_mean(region: ArrayView<u8, Dim<[usize; 2]>>) -> (f64, f64) {
+fn std_mean(region: ArrayView2<u8>) -> (f64, f64) {
     let region_mean = mean(region);
     let count = region.len();
 
-    let variance = region.iter().map(|value| {
-        let diff = region_mean - (*value as f64);
+    let variance = region
+        .iter()
+        .map(|value| {
+            let diff = region_mean - (*value as f64);
 
-        diff * diff
-    }).sum::<f64>() / count as f64;
+            diff * diff
+        })
+        .sum::<f64>()
+        / count as f64;
 
     (variance.sqrt(), region_mean)
 }
+
+// fn create_image_with_padding(
+//     image: ArrayView2<u8>,
+//     border_size: usize,
+// ) -> ArrayD<u8> {
+// }
