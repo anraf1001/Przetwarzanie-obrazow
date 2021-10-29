@@ -82,7 +82,7 @@ def benchmark():
     img = cv2.imread('lenna.png', cv2.IMREAD_GRAYSCALE)
     t1 = timeit(lambda: kuwahara(img), number=1)
     t2 = timeit(lambda: apply_kuwahara(img, 5), number=1)
-    print(f'{t2 / t1 * 100:.2f}%')
+    print(f'Lab kuwahara: {t2 / t1 * 100:.2f}%')
 
 
 def main():
