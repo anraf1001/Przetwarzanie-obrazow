@@ -3,7 +3,7 @@ use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
 fn mean(region: ArrayView<u8, Dim<[usize; 2]>>) -> f64 {
-    let sum = region.iter().sum::<u8>() as f64;
+    let sum: f64 = region.iter().map(|x| *x as f64).sum();
     let count = region.len();
 
     sum / count as f64
