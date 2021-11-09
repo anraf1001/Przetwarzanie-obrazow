@@ -25,10 +25,21 @@ def sum_from_integral_img(row_start: int,
                           column_start: int,
                           column_stop: int,
                           integral_img: np.ndarray) -> int:
-    return integral_img[row_stop, column_stop] - \
-        integral_img[row_start - 1, column_stop] - \
-        integral_img[row_stop, column_start - 1] + \
-        integral_img[row_start - 1, column_start - 1]
+    A, B, C = 0, 0, 0
+
+    if row_start != 0:
+        B = integral_img[row_start - 1, column_stop]
+
+        if column_start != 0:
+            A = integral_img[row_start - 1, column_start - 1]
+            C = integral_img[row_stop, column_start - 1]
+
+    elif column_start != 0:
+        C = integral_img[row_stop, column_start - 1]
+
+    D = integral_img[row_stop, column_stop]
+
+    return int(D - C - B + A)
 
 
 arr = np.array([[4, 5, 2, 1],
@@ -44,10 +55,11 @@ print(arr)
 print(arr_integral)
 
 t1 = timeit(lambda: np.sum(arr[1:, 1:]), number=100)
-t2 = timeit(lambda: sum_from_integral_img(1, 3, 1, 3, arr_integral), number=100)
-print(f'Region sum using numpy: {np.sum(arr[1:, 1:])}')
+t2 = timeit(lambda: sum_from_integral_img(
+    1, 3, 1, 3, arr_integral), number=100)
+print(f'Region sum using numpy: {np.sum(arr)}')
 print(
-    f'Region sum using integral image: {sum_from_integral_img(1, 3, 1, 3, arr_integral)}')
+    f'Region sum using integral image: {sum_from_integral_img(0, 3, 0, 3, arr_integral)}')
 print(f't2/t1 * 100%: {t2/t1 * 100:.2f}%')
 # cv2.imshow('gallery', gallery)
 # cv2.waitKey()
