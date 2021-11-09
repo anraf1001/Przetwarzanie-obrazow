@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from timeit import timeit
 
 
 def integral_image(image: np.ndarray) -> np.ndarray:
@@ -19,6 +20,17 @@ def integral_image(image: np.ndarray) -> np.ndarray:
     return integral
 
 
+def sum_from_integral_img(row_start: int,
+                          row_stop: int,
+                          column_start: int,
+                          column_stop: int,
+                          integral_img: np.ndarray) -> int:
+    return integral_img[row_stop, column_stop] - \
+        integral_img[row_start - 1, column_stop] - \
+        integral_img[row_stop, column_start - 1] + \
+        integral_img[row_start - 1, column_start - 1]
+
+
 arr = np.array([[4, 5, 2, 1],
                 [0, 9, 3, 2],
                 [5, 6, 8, 1],
@@ -30,5 +42,12 @@ gallery_integral = integral_image(gallery)
 
 print(arr)
 print(arr_integral)
+
+t1 = timeit(lambda: np.sum(arr[1:, 1:]), number=100)
+t2 = timeit(lambda: sum_from_integral_img(1, 3, 1, 3, arr_integral), number=100)
+print(f'Region sum using numpy: {np.sum(arr[1:, 1:])}')
+print(
+    f'Region sum using integral image: {sum_from_integral_img(1, 3, 1, 3, arr_integral)}')
+print(f't2/t1 * 100%: {t2/t1 * 100:.2f}%')
 # cv2.imshow('gallery', gallery)
 # cv2.waitKey()
