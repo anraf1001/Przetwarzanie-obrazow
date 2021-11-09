@@ -61,5 +61,3 @@ print(f'Region sum using numpy: {np.sum(arr)}')
 print(
     f'Region sum using integral image: {sum_from_integral_img(0, 3, 0, 3, arr_integral)}')
 print(f't2/t1 * 100%: {t2/t1 * 100:.2f}%')
-# cv2.imshow('gallery', gallery)
-# cv2.waitKey()
