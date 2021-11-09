@@ -3,7 +3,7 @@ import numpy as np
 
 
 def integral_image(image: np.ndarray) -> np.ndarray:
-    integral = image.copy()
+    integral = image.astype(np.uint64).copy()
 
     for i in range(1, integral.shape[1]):
         integral[0, i] = integral[0, i] + integral[0, i - 1]
@@ -23,7 +23,7 @@ arr = np.array([[4, 5, 2, 1],
                 [0, 9, 3, 2],
                 [5, 6, 8, 1],
                 [2, 3, 0, 0]], dtype=np.uint8)
-gallery = cv2.imread('gallery.png')
+gallery = cv2.imread('gallery.png', cv2.IMREAD_GRAYSCALE)
 
 arr_integral = integral_image(arr)
 gallery_integral = integral_image(gallery)
