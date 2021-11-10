@@ -42,6 +42,21 @@ def sum_from_integral_img(row_start: int,
     return int(D - C - B + A)
 
 
+def blur_from_integral(img: np.ndarray, integral_img: np.ndarray, window_size: int) -> np.ndarray:
+    img_ret = img.copy()
+    border = window_size // 2
+
+    for y in range(border, img_ret.shape[0] - border):
+        for x in range(border, img_ret.shape[1] - border):
+            img_ret[y, x] = sum_from_integral_img(y - border,
+                                                  y + border,
+                                                  x - border,
+                                                  x + border,
+                                                  integral_img) / window_size ** 2
+
+    return img_ret
+
+
 arr = np.array([[4, 5, 2, 1],
                 [0, 9, 3, 2],
                 [5, 6, 8, 1],
@@ -61,3 +76,8 @@ print(f'Region sum using numpy: {np.sum(arr)}')
 print(
     f'Region sum using integral image: {sum_from_integral_img(0, 3, 0, 3, arr_integral)}')
 print(f't2/t1 * 100%: {t2/t1 * 100:.2f}%')
+
+gallery_blur = blur_from_integral(gallery, gallery_integral, 7)
+
+cv2.imshow('gallery blur', gallery_blur)
+cv2.waitKey()
